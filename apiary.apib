@@ -1,40 +1,61 @@
 FORMAT: 1A
 
 # SplitBill_Spring2015
-API Document for Split Bill application.
+API document for Split-Bill application.
 
-# Group User Management
+# Group User Management [/user]
 User profile related API.
 
-## Login [/login]
-### List all Notes [GET]
-+ Response 400 (application/json)
+## Email Login [/login]
+Normal login with email and password.
 
 ### Login [POST]
 + Request (application/json)
 
-        { "title": "Buy cheese and bread for breakfast." }
+        { "email" : "sample@email.com",
+          "password" : "ASDOWNSOQNSAODANSDSADA"
+        }
 
-+ Response 201 (application/json)
-
-        { "id": 3, "title": "Buy cheese and bread for breakfast." }
-
-## SignUp [/signup/{id}]
-A single Note object with all its details
-
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
-
-### Retrieve a Note [GET]
 + Response 200 (application/json)
 
-    + Header
+        { "id": 3, "token": "SADAJPDNANXZPSNA[WQSND[" }
 
-            X-My-Header: The Value
++ Response 401 (application/json)
 
-    + Body
+        { "msg": "Your email&password combination is invalid." }
 
-            { "id": 2, "title": "Pick-up posters from post-office" }
+## Social Login [/login_social]
+Login with social email, and the email has been encrypted by AES.
 
-### Remove a Note [DELETE]
-+ Response 204
+### Login [POST]
++ Request (application/json)
+
+        { "email" : "ASDJAKLSDNZPANQLONEXISADWQ" } 
+
++ Response 200 (application/json)
+
+        { "id": 3, "token": "SADAJPDNANXZPSNA[WQSND[" }
+
++ Response 401 (application/json)
+
+        { "msg": "Email is invalid." }
+
+## Email Sign Up [/signup]
+Sign up for email login.
+
+### Sign Up [POST]
++ Request (application/json)
+
+        { 
+          "email" : "sample@email.com",
+          "password" : "ASDOWNSOQNSAODANSDSADA"
+        }
+
++ Response 200 (application/json)
+
+        { "id": 3, "token": "SADAJPDNANXZPSNA[WQSND[" }
+
++ Response 401 (application/json)
+
+        { "msg": "Account has already existed." }
+
