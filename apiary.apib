@@ -6,14 +6,19 @@ API document for Split-Bill application.
 # Group User Management [/user]
 User profile related API.
 
-## Email Login [/login]
-Normal login with email and password.
+## Login [/login]
+User login API, set the login_type to set the login category.
+* '1' for Normal Login
+* '2' for Social App login
 
-### Login [POST]
+The email will be encrypted by AES if choose to login with social email.
+
+### User Login [POST]
 + Request (application/json)
 
         { "email" : "sample@email.com",
           "password" : "ASDOWNSOQNSAODANSDSADA"
+          "login_type" : 1
         }
 
 + Response 200 (application/json)
@@ -23,14 +28,12 @@ Normal login with email and password.
 + Response 401 (application/json)
 
         { "msg": "Your email&password combination is invalid." }
-
-## Social Login [/login_social]
-Login with social email, and the email has been encrypted by AES.
-
-### Login [POST]
+        
 + Request (application/json)
 
-        { "email" : "ASDJAKLSDNZPANQLONEXISADWQ" } 
+        { "email" : "ASDJAKLSDNZPANQLONEXISADWQ" 
+          "login_type" : 2
+        } 
 
 + Response 200 (application/json)
 
@@ -40,8 +43,10 @@ Login with social email, and the email has been encrypted by AES.
 
         { "msg": "Email is invalid." }
 
+
 ## Email Sign Up [/signup]
-Sign up for email login.
+Sign up for email login, user still could register if they used social login before.
+The account will be merged.
 
 ### Sign Up [POST]
 + Request (application/json)
