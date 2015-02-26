@@ -1,0 +1,40 @@
+FORMAT: 1A
+
+# SplitBill_Spring2015
+API Document for Split Bill application.
+
+# Group User Management
+User profile related API.
+
+## Login [/login]
+### List all Notes [GET]
++ Response 400 (application/json)
+
+### Login [POST]
++ Request (application/json)
+
+        { "title": "Buy cheese and bread for breakfast." }
+
++ Response 201 (application/json)
+
+        { "id": 3, "title": "Buy cheese and bread for breakfast." }
+
+## SignUp [/signup/{id}]
+A single Note object with all its details
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
+
+### Retrieve a Note [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { "id": 2, "title": "Pick-up posters from post-office" }
+
+### Remove a Note [DELETE]
++ Response 204
