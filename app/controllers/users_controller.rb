@@ -1,7 +1,9 @@
 require 'encrypt_helper'
+require 'authen_code_helper'
 
 class UsersController < ApplicationController
   include EncryptHelper
+  include AuthenCodeHelper
   
   rescue_from ActionController::ParameterMissing do
     render :msg => "Invalid Request.", :status => 400
@@ -26,15 +28,11 @@ class UsersController < ApplicationController
       user = User.where(email: decrypt(params[:email])).first
     end
     
-    if user
-      if user.password == params[:password]
-        result["id"] = user.id
-        result["token"] = user.session_token
-      else
-        result["msg"] = "Your email address is not a vailid account."
-      end
+    if user && user.password == params[:password]
+      result["id"] = user.id
+      result["token"] = user.session_token
     else
-      result["msg"] = "Your email address is not a vailid account."
+      result["msg"] = "Wrong Email and password combination."
     end
   
     render json: result
@@ -42,6 +40,22 @@ class UsersController < ApplicationController
   
   # POST /forget_password
   def forget_password
+    # Check params
+    params.permit(:email).require(:email)
+    
+    # Check if user exist
+    user = User.where(email: params[:email]).first
+    
+    if user
+      create_authen_code(user, 1)
+      render :json => 'ok'
+    else
+      render :json => {:msg => "Email doesn't exist."}
+    end
+  end
+  
+  # POST /reset_password
+  def reset_password
     
   end
   

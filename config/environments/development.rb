@@ -37,4 +37,14 @@ Rails.application.configure do
   
   ENV['EncryptKey'] = "6476b3f5ec6dcaddb637e9c9654aa687";
   ENV['EncryptVI'] = 'PPDRCMsZhumCdEO1Zm05uw==';
+  
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com',
+    user_name:            'bearworldbrave@gmail.com',
+    password:             'lovejyf0_A',
+    authentication:       'plain',
+    enable_starttls_auto: true  }
 end

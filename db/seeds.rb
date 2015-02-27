@@ -8,3 +8,4 @@
 User.delete_all
 
 User.create(email: 'example@mail.com', password: 'textpassword', session_token: 'texttoken')
+User.create(email: 'bearworldbrave@gmail.com', password: '123456', session_token: 'texttoken')
