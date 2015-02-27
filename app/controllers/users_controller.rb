@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     
     if user
       create_authen_code(user, 1)
-      render :json => 'ok'
+      render :json => {}
     else
       render :json => {:msg => "Email doesn't exist."}
     end
@@ -56,6 +56,25 @@ class UsersController < ApplicationController
   
   # POST /reset_password
   def reset_password
+    # Check params
+    params.permit(:email, :code, :new_password)
+    
+    # Check if user exist
+    user = User.where(email: params[:email]).first
+    
+    if user
+      # Verify code
+      if verify_authen_code(user, params[:code], 1)
+        # Reset the password
+        user.update(password: params[:new_password])
+        render :json => {}
+      else
+        # Wrong code
+        render :json => {:msg => "Wrong code."}
+      end
+    else
+      render :json => {:msg => "Email doesn't exist."}
+    end
     
   end
   

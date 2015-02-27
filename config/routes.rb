@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   post '/users/login' => 'users#login' 
   post '/users/sign_up' => 'users#sign_up'
   post '/users/forget_password' => 'users#forget_password'
+  post '/users/reset_password' => 'users#reset_password'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
