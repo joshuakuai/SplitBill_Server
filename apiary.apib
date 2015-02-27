@@ -64,3 +64,42 @@ The account will be merged.
 
         { "msg": "Account has already existed." }
 
+## Forget Password [/forget_password]
+This will send an email with code to the user's mailbox, they will need to call reset
+password API to finish the password reset process.
+
+### Forget Password [POST]
++ Request (application/json)
+
+        { 
+          "email" : "sample@email.com"
+        }
+
++ Response 200 (application/json)
+
+        {}
+
++ Response 401 (application/json)
+
+        { "msg": "Account doesn't exist." }
+        
+## Reset Password [/reset_password]
+Reset the password by using code, will return the user id and token after reset.
+
+### Forget Password [POST]
++ Request (application/json)
+
+        { 
+          "email" : "sample@email.com",
+          "code" : "ASWNQ",
+          "new_password" : "testpassword"
+        }
+
++ Response 200 (application/json)
+
+        { "id": 3, "token": "SADAJPDNANXZPSNA[WQSND[" }
+
++ Response 401 (application/json)
+
+        { "msg": "Account doesn't exist." }
+
