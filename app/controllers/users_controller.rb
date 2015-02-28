@@ -79,11 +79,44 @@ class UsersController < ApplicationController
   end
   
   # POST /sign_up
-  def sign_up
+def sign_up
+    # Check params
+    params.permit(:password, :sign_up_type, ;email)
+    # Set up the result
     result = Hash.new
-    result["id"] = 5
-    result["token"] = "asdasdasdas"
-    
-    render json: result
-  end
+    # Check sign_up_type
+    case params[:sign_up_type]
+        when 1
+        if puts [paras[:password]].blank?
+            # check the password
+            render :msg => "Invalid request.", :status =>400
+            when 2
+            
+        end
+        # check the email
+        if puts [params[email]].blank?
+            render :msg => "Invalid request.", :status =>400
+            # check if the account already exist
+            user2=User.where(email: params[:email]).first
+            if user2
+                if puts not([user2.password].blank?)
+                    render :msg => "Account has already existed.", :status =>401
+                end
+            end
+            # create user
+            User.create(params[email],params[password])
+            
+            
+            # 根据email和创建时间获取token 这里不太会写
+            user=User.where(email: params[:email]).first
+            token=encrypt(params[email]＋user.created_at.to_s)
+            # update the session_token by method'update_attributes'
+            User.where(email: params[:email]).first.update_attributes(:session_token=>token)
+            result["id"]=user.idUser
+            result["token"]=token
+            # result["id"] = 5
+            # result["token"] = "asdasdasdas"
+            
+            render json: result
+        end
 end
