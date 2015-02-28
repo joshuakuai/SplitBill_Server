@@ -1,5 +1,6 @@
 require 'encrypt_helper'
 require 'authen_code_helper'
+require 'digest/md5'
 
 class UsersController < ApplicationController
   include EncryptHelper
@@ -25,7 +26,9 @@ class UsersController < ApplicationController
       
     when 2
       # Decrypt the email
-      user = User.where(email: decrypt(params[:email])).first
+      decrypted_email = decrypt(params[:email])
+      sign_up_helper(decrypted_email, 2)
+      user = User.where(email: decrypted_email).first
     end
     
     if user && user.password == params[:password]
@@ -50,7 +53,7 @@ class UsersController < ApplicationController
       create_authen_code(user, 1)
       render :json => {}
     else
-      render :json => {:msg => "Email doesn't exist."}
+      render :msg => "Email doesn't exist.", :status =>401
     end
   end
   
@@ -70,53 +73,58 @@ class UsersController < ApplicationController
         render :json => {}
       else
         # Wrong code
-        render :json => {:msg => "Wrong code."}
+        render :msg => "Wrong code.", :status =>401
       end
     else
-      render :json => {:msg => "Email doesn't exist."}
+      render :msg => "Email doesn't exist.", :status =>401
     end
     
   end
   
   # POST /sign_up
-def sign_up
-    # Check params
-    params.permit(:password, :sign_up_type, ;email)
-    # Set up the result
-    result = Hash.new
-    # Check sign_up_type
-    case params[:sign_up_type]
-        when 1
-        if puts [paras[:password]].blank?
-            # check the password
-            render :msg => "Invalid request.", :status =>400
-            when 2
-            
-        end
-        # check the email
-        if puts [params[email]].blank?
-            render :msg => "Invalid request.", :status =>400
-            # check if the account already exist
-            user2=User.where(email: params[:email]).first
-            if user2
-                if puts not([user2.password].blank?)
-                    render :msg => "Account has already existed.", :status =>401
-                end
-            end
-            # create user
-            User.create(params[email],params[password])
-            
-            
-            # 根据email和创建时间获取token 这里不太会写
-            user=User.where(email: params[:email]).first
-            token=encrypt(params[email]＋user.created_at.to_s)
-            # update the session_token by method'update_attributes'
-            User.where(email: params[:email]).first.update_attributes(:session_token=>token)
-            result["id"]=user.idUser
-            result["token"]=token
-            # result["id"] = 5
-            # result["token"] = "asdasdasdas"
-            
-            render json: result
-        end
+  def sign_up
+      # Check params
+      params.permit(:password, :email)
+      
+      if sign_up_helper(params[:email], 1, params[:password])
+        # Search this user again
+        user = User.where(email: params[:email]).first
+        
+        # Set up the result
+        result = Hash.new
+        result["id"] = user.id
+        result["token"] = user.session_token
+        
+        render json: result
+      else
+        render :msg => "Invalid request or email has been registered.", :status =>400
+      end
+  end
+  
+  private
+  def sign_up_helper(email, sign_up_type, password = "")
+    # check if the account already exist
+    user = User.where(email: params[:email]).first
+    
+    if (sign_up_type == 1 && password.blank?) || (user && user.password)
+      # Return false if
+      # 1. User wants to register an password-based account without submitting a password
+      # 2. User wants to register an account which has already been set a password
+      false
+    elsif (sign_up_type == 2 && user)
+      # Return true immediately if 
+      # 1. User are trying to register an social account that has been registered before
+      true
+    end
+    
+    # create user
+    User.where(email: email).first_or_initialize do |new_user|
+      new_user.password = password
+      # Create the token by combining user email and create time
+      new_user.session_token = Digest::MD5.hexdigest("#{email}#{new_user.created_at.to_s}")
+      new_user.save
+    end
+    
+    true
+  end
 end
