@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       user = User.where(email: decrypted_email).first
     end
     
-    if user && user.password == params[:password]
+    if user && (user.password == params[:password])
       result["id"] = user.id
       result["token"] = user.session_token
     else
@@ -110,11 +110,11 @@ class UsersController < ApplicationController
       # Return false if
       # 1. User wants to register an password-based account without submitting a password
       # 2. User wants to register an account which has already been set a password
-      false
+      return false
     elsif (sign_up_type == 2 && user)
       # Return true immediately if 
       # 1. User are trying to register an social account that has been registered before
-      true
+      return true
     end
     
     # create user
@@ -125,6 +125,6 @@ class UsersController < ApplicationController
       new_user.save
     end
     
-    true
+    return true
   end
 end
