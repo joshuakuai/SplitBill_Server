@@ -53,7 +53,9 @@ class UsersController < ApplicationController
       create_authen_code(user, 1)
       render :json => {}
     else
-      render :msg => "Email doesn't exist.", :status =>401
+      render json: {
+        error: "Email doesn't exist.",
+      }, status: 401
     end
   end
   
@@ -76,7 +78,9 @@ class UsersController < ApplicationController
         render :msg => "Wrong code.", :status =>401
       end
     else
-      render :msg => "Email doesn't exist.", :status =>401
+      render json: {
+        error: "Email doesn't exist.",
+      }, status: 401
     end
     
   end
@@ -97,7 +101,9 @@ class UsersController < ApplicationController
         
         render json: result
       else
-        render :msg => "Invalid request or email has been registered.", :status =>400
+        render json: {
+          error: "Invalid request or email has been registered.",
+        }, status: 400
       end
   end
   
@@ -125,6 +131,6 @@ class UsersController < ApplicationController
       new_user.save
     end
     
-    return true
+    true
   end
 end
