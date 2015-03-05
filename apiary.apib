@@ -103,3 +103,82 @@ Reset the password by using code, will return the user id and token after reset.
 
         { "msg": "Account doesn't exist." }
 
+# Group Payment system [/payment]
+
+## Deposit [/deposit]
+Deposit the money into user account.
+
+### Deposit [POST]
++ Request (application/json)
+
+        { 
+          "id" : 4,
+          "token" : "SADAJPDNANXZPSNA",
+          "stripe_token" : "asdasdasdasdasdasdasdasdsadas"
+          "amount" : 1000
+        }
+
++ Response 200 (application/json)
+
+        {}
+
++ Response 401 (application/json)
+
+        { "msg": "Account doesn't exist." }
+        
++ Response 406 (application/json)
+
+        { "msg": "Invalid stripe token." }       
+        
+        
+## Transfer [/transfer]
+Transfer money to another account
+
+### Transfer [POST]
++ Request (application/json)
+
+        { 
+          "id" : 4,
+          "token" : "SADAJPDNANXZPSNA",
+          "target_user" : "asdasda@example.com"
+          "amount" : 1000
+        }
+
++ Response 200 (application/json)
+
+        {}
+
++ Response 401 (application/json)
+
+        { "msg": "Account doesn't exist." }
+        
++ Response 406 (application/json)
+
+        { "msg": "Target account doesn't exist." }        
+        
+## Withdraw [/withdraw]
+Withdraw money to back to user account.
+
+### Withdraw [POST]
++ Request (application/json)
+
+        { 
+          "id" : 4,
+          "token" : "SADAJPDNANXZPSNA",
+          "full_name" : "Jianghua Kuai"
+          "amount" : 1000,
+          "bank_email" : "example@gmail.com",
+          "stripe_token" : "asdasdasdasdasdasdsa"
+        }
+
++ Response 200 (application/json)
+
+        {}
+
++ Response 401 (application/json)
+
+        { "msg": "Account doesn't exist." }
+        
++ Response 402 (application/json)
+
+        { "msg": "Your balance is insufficient." }        
