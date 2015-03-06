@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class UserMailerTest < ActionMailer::TestCase
+
+=begin
   test "forget_password" do
     mail = UserMailer.forget_password
     assert_equal "Forget password", mail.subject
@@ -16,5 +18,6 @@ class UserMailerTest < ActionMailer::TestCase
     assert_equal ["from@example.com"], mail.from
     assert_match "Hi", mail.body.encoded
   end
+=end
 
 end

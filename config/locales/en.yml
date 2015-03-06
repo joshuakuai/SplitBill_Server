@@ -21,4 +21,3 @@
 
 en:
   hello: "Hello world"
-	user_mailer.forget_password.subject: "Your SplitBill Password Reset Request"
