@@ -41,6 +41,7 @@ gem 'spring',        group: :development
 
 gem 'aes'
 gem 'mail'
+gem 'json'
 
 group :development, :test do
   gem 'factory_girl_rails'

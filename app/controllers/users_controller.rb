@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   include AuthenCodeHelper
   
   rescue_from ActionController::ParameterMissing do
-    render :msg => "Invalid Request.", :status => 400
+    render json: { :msg => "Invalid Request."}, :status => 400
   end
   
   # POST /login
@@ -27,18 +27,24 @@ class UsersController < ApplicationController
     when 2
       # Decrypt the email
       decrypted_email = decrypt(params[:email])
-      sign_up_helper(decrypted_email, 2)
+      if !sign_up_helper(decrypted_email, 2)
+        render json: { msg: "Invalid social login request."}, status: 401
+        return
+      end
       user = User.where(email: decrypted_email).first
+    else
+      render json: { msg: "Invalid login type."}, status: 401
+      return
     end
     
     if user && (user.password == params[:password])
-      result["id"] = user.id
-      result["token"] = user.session_token
+      result[:id] = user.id
+      result[:token] = user.session_token
+      render json: result, status: 200
     else
-      result["msg"] = "Wrong Email and password combination."
+      result[:msg] = "Wrong email and password combination."
+      render json: result, status: 401
     end
-  
-    render json: result
   end
   
   # POST /forget_password
@@ -51,10 +57,10 @@ class UsersController < ApplicationController
     
     if user
       create_authen_code(user, 1)
-      render :json => {}
+      render :json => {}, status: 200
     else
       render json: {
-        error: "Email doesn't exist.",
+        msg: "Email doesn't exist."
       }, status: 401
     end
   end
@@ -75,12 +81,10 @@ class UsersController < ApplicationController
         render :json => {}
       else
         # Wrong code
-        render :msg => "Wrong code.", :status =>401
+        render json: { msg: "Wrong code" }, status: 401
       end
     else
-      render json: {
-        error: "Email doesn't exist.",
-      }, status: 401
+      render json: { msg: "Email doesn't exist." }, status: 401
     end
     
   end
@@ -93,17 +97,9 @@ class UsersController < ApplicationController
       if sign_up_helper(params[:email], 1, params[:password])
         # Search this user again
         user = User.where(email: params[:email]).first
-        
-        # Set up the result
-        result = Hash.new
-        result["id"] = user.id
-        result["token"] = user.session_token
-        
-        render json: result
+        render json: {id: user.id, token: user.session_token}, status: 200
       else
-        render json: {
-          error: "Invalid request or email has been registered.",
-        }, status: 400
+        render json: { msg: "Invalid request or email has been registered." }, status: 401
       end
   end
   
@@ -112,25 +108,33 @@ class UsersController < ApplicationController
     # check if the account already exist
     user = User.where(email: params[:email]).first
     
-    if (sign_up_type == 1 && password.blank?) || (user && user.password)
-      # Return false if
-      # 1. User wants to register an password-based account without submitting a password
-      # 2. User wants to register an account which has already been set a password
-      return false
-    elsif (sign_up_type == 2 && user)
-      # Return true immediately if 
-      # 1. User are trying to register an social account that has been registered before
-      return true
+    if user
+      case sign_up_type
+      when 1
+        # Return false if
+        # User wants to register an account which has already been set a password
+        return false
+      when 2
+        # Return true immediately if 
+        # User are trying to register an social account that has been registered before
+        return true
+      end
+    else
+      if sign_up_type == 1 && password.blank?
+        # User wants to register an password-based account without submitting a password
+        return false
+      end
     end
     
+    # New user, begin sign up process
     # create user
-    User.where(email: email).first_or_initialize do |new_user|
+    user = User.where(email: email).first_or_initialize do |new_user|
       new_user.password = password
       # Create the token by combining user email and create time
       new_user.session_token = Digest::MD5.hexdigest("#{email}#{new_user.created_at.to_s}")
       new_user.save
     end
     
-    true
+    user.valid?
   end
 end
