@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   post '/users/sign_up' => 'users#sign_up'
   post '/users/forget_password' => 'users#forget_password'
   post '/users/reset_password' => 'users#reset_password'
+  post '/balance/deposit' => 'balance#deposit'
+  post '/balance/withdraw' => 'balance#withdraw'
+  post '/balance/transfer' => 'balance#transfer'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

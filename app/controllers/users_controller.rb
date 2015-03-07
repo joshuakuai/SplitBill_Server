@@ -132,6 +132,7 @@ class UsersController < ApplicationController
       new_user.password = password
       # Create the token by combining user email and create time
       new_user.session_token = Digest::MD5.hexdigest("#{email}#{new_user.created_at.to_s}")
+      new_user.balance=0
       new_user.save
     end
     
