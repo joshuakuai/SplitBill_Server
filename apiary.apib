@@ -41,7 +41,11 @@ The email will be encrypted by AES if choose to login with social email.
 
 + Response 200 (application/json)
 
-        { "id": 3, "token": "SADAJPDNANXZPSNA[WQSND[" }
+        { 
+          "id": 3, 
+          "token": "SADAJPDNANXZPSNA[WQSND[",
+          "balance" : 2000
+        }
 
 + Response 401 (application/json)
 
@@ -155,6 +159,10 @@ Transfer money to another account
 + Response 401 (application/json)
 
         { "msg": "Account doesn't exist." }
+
++ Response 402 (application/json)
+
+        { "msg": "Your balance is insufficient." } 
         
 + Response 406 (application/json)
 
@@ -172,7 +180,7 @@ Withdraw money to back to user account.
           "full_name" : "Jianghua Kuai"
           "amount" : 1000,
           "bank_email" : "example@gmail.com",
-          "stripe_token" : "asdasdasdasdasdasdsa"
+          "bank_account" : 123124132
         }
 
 + Response 200 (application/json)
