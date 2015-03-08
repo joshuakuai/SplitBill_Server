@@ -7,5 +7,5 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 User.delete_all
 
-User.create(email: 'example@mail.com', password: 'textpassword', session_token: 'texttoken')
-User.create(email: 'bearworldbrave@gmail.com', password: '123456', session_token: 'texttoken')
+User.create(email: 'example@mail.com', password: 'textpassword', session_token: 'texttoken', balance: 0)
+User.create(email: 'bearworldbrave@gmail.com', password: '123456', session_token: 'texttoken', balance: 0)

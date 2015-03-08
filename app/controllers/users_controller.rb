@@ -40,6 +40,7 @@ class UsersController < ApplicationController
     if user && (user.password == params[:password])
       result[:id] = user.id
       result[:token] = user.session_token
+      result[:balance] = user.balance
       render json: result, status: 200
     else
       result[:msg] = "Wrong email and password combination."
@@ -97,7 +98,7 @@ class UsersController < ApplicationController
       if sign_up_helper(params[:email], 1, params[:password])
         # Search this user again
         user = User.where(email: params[:email]).first
-        render json: {id: user.id, token: user.session_token}, status: 200
+        render json: {id: user.id, token: user.session_token, balance: user.balance }, status: 200
       else
         render json: { msg: "Invalid request or email has been registered." }, status: 401
       end
@@ -124,18 +125,15 @@ class UsersController < ApplicationController
         # User wants to register an password-based account without submitting a password
         return false
       end
+      
+      # New user, begin sign up process
+      User.where(email: email).first_or_initialize do |new_user|
+        new_user.password = password
+        # Create the token by combining user email and create time
+        new_user.session_token = Digest::MD5.hexdigest("#{email}#{new_user.created_at.to_s}")
+        new_user.balance = 0
+        return new_user.save
+      end
     end
-    
-    # New user, begin sign up process
-    # create user
-    user = User.where(email: email).first_or_initialize do |new_user|
-      new_user.password = password
-      # Create the token by combining user email and create time
-      new_user.session_token = Digest::MD5.hexdigest("#{email}#{new_user.created_at.to_s}")
-      new_user.balance=0
-      new_user.save
-    end
-    
-    user.valid?
   end
 end

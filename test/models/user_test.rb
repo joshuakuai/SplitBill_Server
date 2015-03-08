@@ -13,6 +13,11 @@ class UserTest < ActiveSupport::TestCase
     end
   end
   
+  test "User balance should not be negative" do
+    user = FactoryGirl.build(:negative_balance_user)
+    assert user.invalid?, "User balance must be positive."
+  end
+  
   test "User token should not be empty" do
     user = FactoryGirl.build(:empty_authen_code_user)
     assert user.invalid?, "User authen token couldn't be nil"
