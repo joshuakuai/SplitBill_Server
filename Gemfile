@@ -43,13 +43,14 @@ gem 'aes'
 gem 'mail'
 gem 'json'
 gem 'rails_12factor'
+gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 
 group :development, :test do
   gem 'factory_girl_rails'
 end
 
-gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
-
-gem 'puma'
-gem 'rack-timeout'
+group :production do
+  gem 'puma'
+  gem 'rack-timeout'
+end
 
