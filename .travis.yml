@@ -9,5 +9,5 @@ rvm:
   - ree
 	
 env:
-  - PUBLISHABLE_KEY = "pk_test_kEbuoHxEkU9TXcLxMiqbO2wC"
-  - SECRET_KEY = "sk_test_HjgBPaq7P9RBbtyKejj3wwP7"
+  - PUBLISHABLE_KEY="pk_test_kEbuoHxEkU9TXcLxMiqbO2wC"
+  - SECRET_KEY="sk_test_HjgBPaq7P9RBbtyKejj3wwP7"
