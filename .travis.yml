@@ -2,8 +2,7 @@ language: ruby
 rvm:
   - 2.2.0
 env:
-  - PUBLISHABLE_KEY="pk_test_kEbuoHxEkU9TXcLxMiqbO2wC"
-  - SECRET_KEY="sk_test_HjgBPaq7P9RBbtyKejj3wwP7"
+  - PUBLISHABLE_KEY="pk_test_kEbuoHxEkU9TXcLxMiqbO2wC" SECRET_KEY="sk_test_HjgBPaq7P9RBbtyKejj3wwP7"
 before_script:
   - psql -c 'create database SplitBill_test;' -U postgres
   - cp config/database.yml.travis config/database.yml
